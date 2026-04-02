@@ -1,36 +1,62 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <head>
-        <title>{% block page_name %}{{ page_name }}{% endblock %}</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
+    <title>{% block page_name %}{{ page_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
-    <!-- The below tag is using Bulma CSS. Try replacing line 14 with line 13. -->
-    <!-- <div class="has-text-success-dark is-size-4  has-text-weight-medium"> -->
-    <div>
-        <a href="{{ url_for('home') }}">
-            Home
-        </a>
-        &nbsp;&nbsp;
-        <a href="{{ url_for('all_pages') }}">
-            Pages
-        </a>
-        &nbsp;&nbsp;
-        <a href="{{ url_for('about') }}">
-            About
-        </a>
-    </div>
+    <nav class="site-nav">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('all_pages') }}">Pages</a>
+        <a href="{{ url_for('about') }}">About</a>
+    </nav>
 
-    <!-- The below tag is using Bulma CSS. Try replacing line 30 with line 29. -->
-    <!-- <div class="content"> -->
-    <div>
-        {% block content %}{{ page_content }}{% endblock %}
-    </div>
+    <div class="content">
+        {% block content %}
 
+        {% if is_home %}
+        <!-- Home page hero section -->
+        <div class="hero">
+            <h1>Welcome to the Wiki</h1>
+            <p>
+                This wiki is a collaborative space where you can explore and contribute articles
+                on a wide range of topics. Browse through community-written pages, discover new
+                subjects, and dive deep into what interests you most.
+            </p>
+            <p>
+                Use the <strong>Pages</strong> link above to see everything available.
+            </p>
+            <img src="{{ url_for('static', filename='wiki-banner.jpg') }}" alt="Wiki banner">
+            <br>
+            <a href="{{ url_for('all_pages') }}" class="btn">Browse All Pages</a>
+        </div>
+        {% else %}
+        <!-- Normal page content -->
+        <div class="page-content">
+            {{ page_content }}
+        </div>
+
+        <!-- Prev/Next nav (only shows on /pages/<name> routes) -->
+        {% if prev_page or next_page %}
+        <div class="page-nav">
+            {% if prev_page %}
+                <a href="{{ url_for('pages', name=prev_page) }}" class="btn">&larr; {{ prev_page }}</a>
+            {% else %}
+                <span class="btn disabled">&larr; No Previous</span>
+            {% endif %}
+
+            <a href="{{ url_for('all_pages') }}" class="btn">All Pages</a>
+
+            {% if next_page %}
+                <a href="{{ url_for('pages', name=next_page) }}" class="btn">{{ next_page }} &rarr;</a>
+            {% else %}
+                <span class="btn disabled">No Next &rarr;</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% endblock %}
+    </div>
 </body>
-
 </html>
